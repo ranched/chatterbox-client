@@ -1,20 +1,30 @@
 // YOUR CODE HERE:
 const app = {
+    messageCount: 0,
     init: function() {
+      $(document).ready(function() {
+        app.fetch();
 
+        $('.refresh').on('click', function() {
+          app.fetch(app.messageCount);
+        });
+
+
+      });
     } ,
-    fetch: function() {
+    fetch: function(skip=0) {
       $.ajax({
         // This is the url you should use to communicate with the parse API server.
-        url: 'http://parse.atx.hackreactor.com/chatterbox/classes/messages',
+        url: 'http://parse.atx.hackreactor.com/chatterbox/classes/messages?limit=200&skip=' + skip,
         type: 'GET',
         success: function (data) {
             console.log('Messages received');
             const $chats = $('#chats');
             data.results.forEach((message) => {
+              app.messageCount++;
               let $message = $('<div class="chat"></div>');
               $message.text(message.text);
-              $chats.append($message);
+              $chats.prepend($message);
             });
         },
         error: function (data) {
@@ -23,12 +33,12 @@ const app = {
         }
       });
     },
-    send: function(messageObj) {
+    send: function(messageObj) {       
       $.ajax({
         // This is the url you should use to communicate with the parse API server.
         url: 'http://parse.atx.hackreactor.com/chatterbox/classes/messages',
         type: 'POST',
-        data: JSON.stringify(message),
+        data: JSON.stringify(messageObj),
         contentType: 'application/json',
         success: function (data) {
             console.log('chatterbox: Message sent');
