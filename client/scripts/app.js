@@ -1,6 +1,7 @@
 // YOUR CODE HERE:
 const app = {
-    selectedRoom: 'lobby',
+    selectedRooms: new Set(['lobby']),
+    availableRooms: new Set(),
     messageCount: 0,
     lastestMessageDate: '',
     server: 'http://parse.atx.hackreactor.com/chatterbox/classes/messages',
@@ -8,17 +9,20 @@ const app = {
       $(document).ready(function() {
         app.fetch();
 
-        $('.refresh').on('click', function() {
+        $('.refreshBtn').on('click', function() {
           app.fetch(app.messageCount);
         });
 
+        $('.roomBtn').on('click', function(){
+          app.renderRoom();
+        })
 
       });
     } ,
     fetch: function(skip=0) {
         app.server = 'http://parse.atx.hackreactor.com/chatterbox/classes/messages';
         const first50 = [];
-        
+        const selectedRoomsArray = Array.from(app.selectedRooms);
         const ajaxRequestObject = {
           // This is the url you should use to communicate with the parse API server.
           url: app.server,
@@ -29,7 +33,7 @@ const app = {
             // skip: skip,
             where: {
               roomname: {
-                $regex: "^" + app.selectedRoom
+                $regex: "^(" + selectedRoomsArray.join('|') + ")",
               }
             }
           },
@@ -80,9 +84,10 @@ const app = {
       let $message = $('<div class="chat"></div>');
       $message.text(messageObj.text);
       $chats.prepend($message);
+      app.availableRooms.add(messageObj.roomname);
     },
     renderRoom: function(roomTitle) {
-
+      app.availableRooms.add($(".roomText").text);
     },
     handleUsernameClick: function() {
 
