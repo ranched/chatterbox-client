@@ -15,7 +15,9 @@ const app = {
 
         $('.roomBtn').on('click', function(){
           app.renderRoom();
-        })
+        });
+        
+        app.poplateRooms();
 
       });
     } ,
@@ -38,10 +40,15 @@ const app = {
             }
           },
           success: function (data) {
+              if(data.results.length === 0) {
+                return;
+              }
               app.lastestMessageDate = data.results[0].createdAt;
               data.results.reverse().forEach((message) => {
-              app.renderMessage(message);
+                app.renderMessage(message);
               });
+              app.poplateRooms();
+              console.log(app.selectedRooms);
               console.log(data);
           },
           error: function (data) {
@@ -51,7 +58,7 @@ const app = {
         }
         if(app.lastestMessageDate) {
             ajaxRequestObject.data.where.createdAt = {
-              $gte: {
+              $gt: {
                 __type: "Date",
                 iso: app.lastestMessageDate
               }
@@ -77,6 +84,23 @@ const app = {
     },
     clearMessages: function() {
         $('#chats').empty();
+    },
+    poplateRooms: function() {
+      $('#roomSelector').empty();
+      let $roomSelector = $('#roomSelector');
+      Array.from(app.selectedRooms).forEach((room) => {
+        let $room = $(`<span>${room}</span>`)
+        $room.on('click', function() {
+          if(app.selectedRooms.has(room)) {
+            app.selectedRooms.delete(room);
+            $room.toggleClass('isSelected');
+          } else {
+            app.selectedRooms.add(room);
+            $room.toggleClass('isSelected');
+          }
+        });
+        $roomSelector.append($room);
+      });
     },
     renderMessage: function(messageObj) {
       app.messageCount++;
