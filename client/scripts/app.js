@@ -18,7 +18,6 @@ const app = {
     fetch: function(skip=0) {
         app.server = 'http://parse.atx.hackreactor.com/chatterbox/classes/messages';
         const first50 = [];
-        app.server += `&where={"roomname":{"$regex":"^${app.selectedRoom}"}}`;
         
         const ajaxRequestObject = {
           // This is the url you should use to communicate with the parse API server.
@@ -27,17 +26,16 @@ const app = {
           data: {
             limit: 200,
             order: "-createdAt",
-            skip: skip,
+            // skip: skip,
             where: {
               roomname: {
-                $regex: "^$" + app.selectedRoom 
+                $regex: "^" + app.selectedRoom
               }
             }
           },
           success: function (data) {
               app.lastestMessageDate = data.results[0].createdAt;
-              console.log('Messages received');
-              data.results.forEach((message) => {
+              data.results.reverse().forEach((message) => {
               app.renderMessage(message);
               });
               console.log(data);
@@ -48,7 +46,12 @@ const app = {
           }
         }
         if(app.lastestMessageDate) {
-            app.server += `&where={"createdAt":{"$gte":${app.lastestMessageDate}}}`;
+            ajaxRequestObject.data.where.createdAt = {
+              $gte: {
+                __type: "Date",
+                iso: app.lastestMessageDate
+              }
+            }      
         }
       $.ajax(ajaxRequestObject);
     },
@@ -76,7 +79,7 @@ const app = {
       const $chats = $('#chats');
       let $message = $('<div class="chat"></div>');
       $message.text(messageObj.text);
-      $chats.append($message); 
+      $chats.prepend($message);
     },
     renderRoom: function(roomTitle) {
 
