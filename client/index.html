@@ -24,15 +24,19 @@
   </head>
   <body>
     <div id="main">
+      <div id="roomSelect"></div>
       <h1>chatterbox</h1>
       <!-- Your HTML goes here! -->
       <button class='btn refreshBtn'>Refresh</button>
-      <div id="roomSelect"></div>
-      <form class="form" id="roomSelect">
-        <input class="btn roomBtn" type="submit" value="Add Room"> <input class="roomText" type="text" name="roomName" value="room"><br>
+      <div class="roomForm">
+        <form class="form" id="roomSelect">
+          <input class="btn roomBtn" type="submit" value="Add Room"> <input class="roomText" type="text" name="roomName" value="room"><br>
+        </form>
+      </div>
       <form class="form" id="send">
-        Username: <input type="text" name="username" value="Name"><br>
-        Message: <input type="text" name="message" value="Your message"><br>
+        Username: <input type="text" name="username" id="nameField" value="Name"><br>
+        Message: <input type="text" name="message" id="messageField" value="Your message"><br>
+        Room: <input type="text" name="room" id="roomField" value="Room name"><br>
         <input class="btn messageBtn submit" type="submit">
       </form>
       

@@ -92,3 +92,16 @@ form input[type=text] {
 .isSelected {
     font-weight: bold;
 }
+
+.roomForm {
+    margin-bottom: 20px;
+}
+
+.username {
+    margin-bottom: 15px;
+    margin-right: 15px;
+}
+
+.messageText {
+    margin-left: 10px;
+}

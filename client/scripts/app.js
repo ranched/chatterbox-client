@@ -1,7 +1,8 @@
 // YOUR CODE HERE:
 const app = {
     selectedRooms: new Set(['lobby']),
-    availableRooms: new Set(),
+    availableRooms: new Set(['lobby']),
+    currentRoom: 'lob',
     messageCount: 0,
     lastestMessageDate: '',
     server: 'http://parse.atx.hackreactor.com/chatterbox/classes/messages',
@@ -26,6 +27,7 @@ const app = {
         app.server = 'http://parse.atx.hackreactor.com/chatterbox/classes/messages';
         const first50 = [];
         const selectedRoomsArray = Array.from(app.selectedRooms);
+        let regexString = app.availableRooms.size === 1 ? '.*' : "^(" + selectedRoomsArray.join('|') + ")"; 
         const ajaxRequestObject = {
           // This is the url you should use to communicate with the parse API server.
           url: app.server,
@@ -36,7 +38,7 @@ const app = {
             // skip: skip,
             where: {
               roomname: {
-                $regex: "^(" + selectedRoomsArray.join('|') + ")",
+                $regex: regexString,
               }
             }
           },
@@ -76,6 +78,7 @@ const app = {
         dataType: 'json',
         success: function (data) {
             console.log('chatterbox: Message sent');
+            app.fetch();   
         },
         error: function (data) {
             // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -111,7 +114,7 @@ const app = {
       let $message = $('<div class="chat"></div>');
       let $username = $('<span class="username"></span>');
       $username.text(messageName);
-      let $messageText = $('<span class="messageText"></span>'); 
+      let $messageText = $('<p class="messageText"></p>'); 
       $messageText.text(messageText);
       $username.on('click', () => {
         app.handleUsernameClick(messageObj.username);
@@ -122,8 +125,11 @@ const app = {
       app.availableRooms.add(messageObj.roomname);
     },
     renderRoom: function(roomTitle) {
-      app.availableRooms.add($(".roomText").text);
+      let roomName = $("#roomField").val();      
+      // app.availableRooms.add($(".roomText").text);
+      // $('#roomSelect').add($(".roomText").text);      
       app.poplateRooms();
+      event.preventDefault();      
     },
     handleUsernameClick: function(username) {
       let $username = $('<span class="friend"></span>');
@@ -131,7 +137,17 @@ const app = {
       $('.friendSection').append($username);
     }, 
     handleSubmit: function(event) {
+      let username = $("#nameField").val();
+      let message = $("#messageField").val();
+      let roomName = $("#roomField").val();
+      let dataObj = {
+        username: username, 
+        text: message, 
+        roomname: roomName
+      }
+      app.send(dataObj);
+      console.log('submitted')
+      console.log(event.data);
       event.preventDefault();
-      console.log(event);
     }
 }
