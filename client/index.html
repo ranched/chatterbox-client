@@ -27,15 +27,16 @@
       <h1>chatterbox</h1>
       <!-- Your HTML goes here! -->
       <button class='btn refreshBtn'>Refresh</button>
-      <div id="roomSelector"></div>
+      <div id="roomSelect"></div>
       <form class="form" id="roomSelect">
         <input class="btn roomBtn" type="submit" value="Add Room"> <input class="roomText" type="text" name="roomName" value="room"><br>
-      <form class="form">
+      <form class="form" id="send">
         Username: <input type="text" name="username" value="Name"><br>
         Message: <input type="text" name="message" value="Your message"><br>
-        <input class="btn messageBtn" type="submit">
+        <input class="btn messageBtn submit" type="submit">
       </form>
       
+      <div class="friendSection"></div>
         
     </div>
     <div id="chats"></div>

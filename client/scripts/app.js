@@ -19,6 +19,7 @@ const app = {
         
         app.poplateRooms();
 
+        $('#send').on('submit', app.handleSubmit);
       });
     } ,
     fetch: function(skip=0) {
@@ -86,10 +87,10 @@ const app = {
         $('#chats').empty();
     },
     poplateRooms: function() {
-      $('#roomSelector').empty();
-      let $roomSelector = $('#roomSelector');
+      $('#roomSelect').empty();
+      let $roomSelector = $('#roomSelect');
       Array.from(app.selectedRooms).forEach((room) => {
-        let $room = $(`<span>${room}</span>`)
+        let $room = $('<span>' + room + '</span>')
         $room.on('click', function() {
           if(app.selectedRooms.has(room)) {
             app.selectedRooms.delete(room);
@@ -104,20 +105,33 @@ const app = {
     },
     renderMessage: function(messageObj) {
       app.messageCount++;
+      let messageName = messageObj.username;
+      let messageText = messageObj.text;
       const $chats = $('#chats');
       let $message = $('<div class="chat"></div>');
-      $message.text(messageObj.text);
+      let $username = $('<span class="username"></span>');
+      $username.text(messageName);
+      let $messageText = $('<span class="messageText"></span>'); 
+      $messageText.text(messageText);
+      $username.on('click', () => {
+        app.handleUsernameClick(messageObj.username);
+      });
+      $message.append($username);
+      $message.append($messageText);
       $chats.prepend($message);
       app.availableRooms.add(messageObj.roomname);
     },
     renderRoom: function(roomTitle) {
       app.availableRooms.add($(".roomText").text);
+      app.poplateRooms();
     },
-    handleUsernameClick: function() {
-
+    handleUsernameClick: function(username) {
+      let $username = $('<span class="friend"></span>');
+      $username.text(username);
+      $('.friendSection').append($username);
     }, 
     handleSubmit: function(event) {
       event.preventDefault();
-
+      console.log(event);
     }
 }
